@@ -80,3 +80,5 @@ async def atualizar_proximas_lutas():
 #except (KeyboardInterrupt, SystemExit):
 ##    # Desligar o agendador de forma limpa
 #    scheduler.shutdown()
+
+

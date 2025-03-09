@@ -67,10 +67,10 @@ def get_fighters_data(link_fighters) -> pd.DataFrame:
             apelido = soup.find("p", class_="hero-profile__nickname")
             fighters_data_complete['apelido'].append(apelido.text.strip().replace('"','') if apelido else "")
         
-            # Win, loose, draw
-            fighters_data_complete['win_lutas'].append(int(wld_source[0]) if wld_source[0] else 0)
-            fighters_data_complete['loose_lutas'].append(int(wld_source[1]) if wld_source[1] else 0)
-            fighters_data_complete['draw_lutas'].append(int(wld_source[2]) if wld_source[2] else 0)
+            # Win, lose, draw
+            fighters_data_complete['win'].append(int(wld_source[0]) if wld_source[0] else 0)
+            fighters_data_complete['lose'].append(int(wld_source[1]) if wld_source[1] else 0)
+            fighters_data_complete['draw'].append(int(wld_source[2]) if wld_source[2] else 0)
 
             # Link do corpo dos lutadores
             corpo = soup.find("div", class_="hero-profile__image-wrap")
@@ -136,9 +136,9 @@ def get_fighters_data(link_fighters) -> pd.DataFrame:
             
             if stats['Tempo médio de luta'] != '0':
                 time_parts = stats['Tempo médio de luta'].split(':')
-                fighters_data_complete['tempo_medio_luta'].append(int(time_parts[0]) * 60 + int(time_parts[1]))
+                fighters_data_complete['tempo_medio'].append(int(time_parts[0]) * 60 + int(time_parts[1]))
             else:
-                fighters_data_complete['tempo_medio_luta'].append(0)
+                fighters_data_complete['tempo_medio'].append(0)
 
             # Golpes significantes por área
             sig_strike_source = soup.find("svg", class_="c-stat-body__svg")

@@ -21,6 +21,9 @@ def get_link_events():
     chrome_options = Options()
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("disable-notifications")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")
+    
 
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://www.ufc.com.br/events#events-list-past")
@@ -40,11 +43,11 @@ def get_link_events():
     while True:
         try:
             # Tamanho do scroll
-            time.sleep(4)  
-            driver.execute_script(f"window.scrollTo(0, window.scrollY + 7);")
+            time.sleep(5)  
+            driver.execute_script(f"window.scrollTo(0, window.scrollY + 10);")
 
             # Esperar até que o botão de pesquisa seja visível
-            more_button = WebDriverWait(driver, 10).until(
+            more_button = WebDriverWait(driver, 15).until(
                 EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/main/div[1]/div/div/div/div/div/div/div/div/div[5]/div/div/details[2]/div/div/ul/li/a"))
             )
             

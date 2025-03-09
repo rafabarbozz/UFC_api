@@ -1,12 +1,13 @@
-import pandas as pd
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from database.models.LutaFutura import LutaFutura  
-from database.models.Lutador import Lutador 
+from database.models.Lutador import Lutador
+from database.models.LutaFutura import LutaFutura
+import pandas as pd
 from Rede_neural.model import NeuralNetwork, ModelConfig
 
 # Atualiza ou cria lutas futuras no banco de dados baseado no DataFrame fornecido
-def update_next_fights(df_prox_fights: pd.DataFrame, db: Session):  
+async def update_next_fights(df_prox_fights: pd.DataFrame, db: AsyncSession):
     # Configuração do modelo de rede neural
     model_config = ModelConfig()
     neural_network = NeuralNetwork(model_config)
@@ -27,12 +28,14 @@ def update_next_fights(df_prox_fights: pd.DataFrame, db: Session):
             first_fighter_name = row['first_fighter_prox']
             second_fighter_name = row['second_fighter_prox']
 
-            first_fighter_prox = db.query(Lutador).filter(Lutador.nome_lutador == first_fighter_name).first()
+            result_first = await db.execute(select(Lutador).where(Lutador.nome_lutador == first_fighter_name))
+            first_fighter_prox = result_first.scalars().first()
             if not first_fighter_prox:
                 print(f"Lutador não encontrado: {first_fighter_name}")
                 continue
 
-            second_fighter_prox = db.query(Lutador).filter(Lutador.nome_lutador == second_fighter_name).first()
+            result_second = await db.execute(select(Lutador).where(Lutador.nome_lutador == second_fighter_name))
+            second_fighter_prox = result_second.scalars().first()
             if not second_fighter_prox:
                 print(f"Lutador não encontrado: {second_fighter_name}")
                 continue
@@ -42,8 +45,13 @@ def update_next_fights(df_prox_fights: pd.DataFrame, db: Session):
             continue
 
         # Busca os dados dos lutadores no banco de dados
-        lutador_1 = pd.DataFrame([db.query(Lutador).filter(Lutador.nome_lutador == first_fighter_prox.nome_lutador).first().__dict__])
-        lutador_2 = pd.DataFrame([db.query(Lutador).filter(Lutador.nome_lutador == second_fighter_prox.nome_lutador).first().__dict__])
+        result_lutador_1 = await db.execute(select(Lutador).where(Lutador.nome_lutador == first_fighter_prox.nome_lutador))
+        lutador_1_obj = result_lutador_1.scalars().first()
+        lutador_1 = pd.DataFrame([lutador_1_obj.__dict__])
+
+        result_lutador_2 = await db.execute(select(Lutador).where(Lutador.nome_lutador == second_fighter_prox.nome_lutador))
+        lutador_2_obj = result_lutador_2.scalars().first()
+        lutador_2 = pd.DataFrame([lutador_2_obj.__dict__])
 
         try:
             pred_1, pred_2 = neural_network.previsao(lutador_1, lutador_2)
@@ -66,20 +74,20 @@ def update_next_fights(df_prox_fights: pd.DataFrame, db: Session):
 
             # Adiciona a nova luta futura à sessão e commita
             db.add(nova_luta_futura)
-            db.commit()
+            await db.commit()
 
         except SQLAlchemyError as e:
-            db.rollback()
+            await db.rollback()
             print(f"Erro inesperado ao processar a luta futura - {row['event_name_prox']}: {first_fighter_prox.nome_lutador} vs {second_fighter_prox.nome_lutador}")
             print(e)
             continue
         except KeyError as e:
-            db.rollback()
+            await db.rollback()
             print(f"Erro inesperado ao processar a luta futura - {row['event_name_prox']}: {first_fighter_prox.nome_lutador} vs {second_fighter_prox.nome_lutador}")
             print(f"Chave não encontrada no DataFrame: {e}")
             continue
         except Exception as e:
-            db.rollback()
+            await db.rollback()
             print(f"Erro inesperado ao processar a luta futura - {row['event_name_prox']}: {first_fighter_prox.nome_lutador} vs {second_fighter_prox.nome_lutador}")
             print(e)
             continue
