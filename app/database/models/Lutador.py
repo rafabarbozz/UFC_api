@@ -13,9 +13,9 @@ class Lutador(Base):
     sexo = Column(String(1), nullable=False, default="Nan")
     categoria = Column(String(20), nullable=False, default="Nan")
     
-    win_lutas = Column(Integer, nullable=False, default=-1)
-    lose_lutas = Column(Integer, nullable=False, default=-1)
-    draw_lutas = Column(Integer, nullable=False, default=-1)
+    win = Column(Integer, nullable=False, default=-1)
+    lose = Column(Integer, nullable=False, default=-1)
+    draw = Column(Integer, nullable=False, default=-1)
     
     precisao_striking = Column(Float, nullable=False, default=-1)
     sig_pe_str = Column(Float, nullable=False, default=-1)
@@ -36,7 +36,7 @@ class Lutador(Base):
     defesa_quedas = Column(Float, nullable=False, default=-1)
     
     media_knockdowns = Column(Float, nullable=False, default=-1)
-    tempo_medio_luta = Column(Integer, nullable=False, default=-1)
+    tempo_medio = Column(Integer, nullable=False, default=-1)
     
     sig_head_str = Column(Float, nullable=False, default=-1)
     sig_body_str = Column(Float, nullable=False, default=-1)
