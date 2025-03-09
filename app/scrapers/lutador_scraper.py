@@ -19,10 +19,10 @@ def get_fighters_data(link_fighters) -> pd.DataFrame:
     session.mount('https://', adapter)
 
     # Inicializa um dicionário com todas as colunas esperadas, cada uma com uma lista vazia
-    columns = ['nome_lutador','apelido', 'sexo', 'categoria', 'win_lutas', 'loose_lutas', 'draw_lutas', 'precisao_striking', 'sig_pe_str', 'sig_clinch_str', 'sig_solo_str',
+    columns = ['nome_lutador', 'apelido', 'sexo', 'categoria', 'win', 'lose', 'draw', 'precisao_striking', 'sig_pe_str', 'sig_clinch_str', 'sig_solo_str',
                 'method_ko_tko', 'method_dec', 'method_fin', 'golpes_sig_conectados', 'golpes_sig_absorvidos', 'media_quedas',
-                'media_fin', 'defesa_golpes_sig', 'defesa_quedas', 'media_knockdowns', 'tempo_medio_luta', 'sig_head_str', 'sig_body_str', 
-            'sig_leg_str', 'idade_lutador', 'altura_lutador', 'peso_lutador', 'anos_xp','link_corpo','link_rosto']
+                'media_fin', 'defesa_golpes_sig', 'defesa_quedas', 'media_knockdowns', 'tempo_medio', 'sig_head_str', 'sig_body_str', 
+                'sig_leg_str', 'idade_lutador', 'altura_lutador', 'peso_lutador', 'anos_xp','link_corpo','link_rosto']
 
     fighters_data_complete = {col: [] for col in columns}
 
