@@ -1,0 +1,29 @@
+batch_size: 32
+input_dim: 50
+layers:
+- activation: LeakyReLU
+  alpha: 0.01
+  dropout: 0.2
+  input_dim: true
+  regularizer: l2(0.01)
+  units: 128
+- activation: LeakyReLU
+  alpha: 0.01
+  dropout: 0.2
+  regularizer: l2(0.01)
+  units: 128
+- activation: LeakyReLU
+  alpha: 0.01
+  dropout: 0.2
+  regularizer: l2(0.01)
+  units: 128
+- activation: LeakyReLU
+  alpha: 0.01
+  regularizer: l2(0.01)
+  units: 64
+- activation: sigmoid
+  regularizer: false
+  units: 1
+learning_rate: 0.0001
+model_path: Rede_neural/Models/202408101459
+train_epochs: 1000

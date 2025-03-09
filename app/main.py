@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from database.db_config import engine, Base
 from routers import lutadores, lutas, lutas_futuras
+#import scheduler  
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
@@ -10,7 +11,7 @@ async def lifespan(_: FastAPI):
         await conn.run_sync(lambda sync_conn: Base.metadata.create_all(sync_conn))
     yield
     await engine.dispose()
-    
+
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(lutadores.router, prefix="/lutadores", tags=["Lutadores"])
